@@ -3,6 +3,7 @@
 # A set is an unordered collection with no duplicate elements.
 # To create an empty set you have to use set(), not {}; the latter creates an empty dictionary
 
+# O(L * 26 * n), space: O(n)
 
 class Solution:
     def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
