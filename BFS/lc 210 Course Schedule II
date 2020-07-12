@@ -1,0 +1,66 @@
+# 解题思路
+# 对于两门课之间的约束关系，很容易联想到图，我们可以将课抽象为节点，将约束抽象为一条有向边，可以用有向图的相关算法解决问题。拓扑排序正好可以解决这一问题。
+
+# 算法：拓扑排序
+# 一个合法的选课序列就是一个拓扑序，拓扑序是指一个满足有向图上，不存在一条边出节点在入节点后的线性序列，如果有向图中有环，就不存在拓扑序。可以通过拓扑排序算法来得到拓扑序，以及判断是否存在环。
+
+# 拓扑排序步骤：
+
+# 建图并记录所有节点的入度。
+# 将所有入度为0的节点加入队列。
+# 取出队首的元素now，将其加入拓扑序列。
+# 访问所有now的邻接点nxt，将nxt的入度减1，当减到0后，将nxt加入队列。
+# 重复步骤3、4，直到队列为空。
+# 如果拓扑序列个数等于节点数，代表该有向图无环，且存在拓扑序。
+# 复杂度分析
+# 设课程数，即图的节点数为V。
+
+# 约束数量，即图的边数为E。
+
+# 时间复杂度O(V + E)
+# 建图，扫描一遍所有的边O(E)。
+# 每个节点最多入队出队1次，复杂度O(V)。
+# 邻接表最终会被遍历1遍，复杂度O(E)。
+# 综上，总复杂度为O(V + E)。
+# 空间复杂度O(V + E)
+# 邻接表占用O(V + E)的空间。
+# 队列最劣情况写占用O(V)的空间。
+# 综上，总复杂度为O(V + E)。
+
+class Solution:
+    """
+    @param: numCourses: a total of n courses
+    @param: prerequisites: a list of prerequisite pairs
+    @return: the course order
+    """
+    def findOrder(self, numCourses, prerequisites):
+        graph = [[] for i in range(numCourses)]
+        in_degree = [0] * numCourses
+        
+        # 建图
+        for node_in, node_out in prerequisites:
+            graph[node_out].append(node_in)
+            in_degree[node_in] += 1
+        
+        num_choose = 0
+        queue = collections.deque()
+        topo_order = []
+        
+        # 将入度为 0 的编号加入队列
+        for i in range(numCourses):
+            if in_degree[i] == 0:
+                queue.append(i)
+        
+        while queue:
+            now_pos = queue.popleft()
+            topo_order.append(now_pos)
+            num_choose += 1
+            # 将每条邻边删去，如果入度降为 0，再加入队列
+            for next_pos in graph[now_pos]:
+                in_degree[next_pos] -= 1
+                if in_degree[next_pos] == 0:
+                    queue.append(next_pos)
+        
+        if num_choose == numCourses:
+            return topo_order
+        return []
