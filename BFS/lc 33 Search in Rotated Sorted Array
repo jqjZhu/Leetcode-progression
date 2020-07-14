@@ -1,0 +1,39 @@
+# 算法：binary search
+
+# 代码思路:
+# 二分搜索时每次都是把数组分成两部分，先判段哪一部分是有序的
+# 如果target在有序的那一部分，那么继续二分
+# 如果在无序的那一部分，重复第一步
+
+# 复杂度分析:
+# 空间复杂度：O(N)
+# 时间复杂度：O(logN)
+
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        if not nums:
+            return -1
+        left = 0
+        right = len(nums) - 1
+        while left + 1 < right:
+            mid = left + (right - left) // 2
+            if (nums[mid] > nums[left]):
+                #此时left和mid肯定处在同一个递增数组上
+                #那么就直接运用原始的二分查找
+                if nums[left] <= target and target < nums[mid]:
+                    right = mid
+                else:
+                    left = mid
+            else:
+                #此时mid处于第二个递增数组 left处于第一个递增数组 自然的mid和right肯定处于第二个递增数组上               
+                #还是直接运用原始的二分查找思想
+                if nums[mid] < target and target <= nums[right]:
+                    left = mid
+                else:
+                    right = mid
+        
+        if nums[left] == target:
+            return left
+        if nums[right] == target:
+            return right
+        return -1
