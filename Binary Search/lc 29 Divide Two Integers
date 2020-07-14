@@ -1,0 +1,81 @@
+# 算法：二分/倍增
+# 这道题要求不用乘，除和模操作完成除法操作，所以我们考虑使用减法。
+# 不断地减掉除数，直到为0为止，但是这样效率太低，我们考虑使用二分法或者说是倍增法来加速这个过程。
+
+# 算法思路
+# 不断对除数乘2，直到它恰好比被除数小为止，同时记录乘2的次数cnt。
+# 将被除数减掉加倍后的值，答案加上cnt。
+
+# 代码思路
+# 下面先讨论一下数据处理时会遇到的一些特殊边界情况：
+# 如果除数为0，则被除数为正时，结果为正无穷，否则为负无穷
+# 如果被除数为0，则返回0
+# 如果被除数为正无穷除数为1或者被除数为负无穷除数为－1，则返回正无穷
+# 如果被除数为正无穷除数为－1或者被除数为负无穷除数为1，则返回负无穷
+# 记录一下结果的符号，对除数和被除数取绝对值。
+
+# 复杂度分析
+# 空间复杂度：
+# O(1)
+
+# 时间复杂度： 
+# O(log(dividend/divisor))
+
+
+class Solution:
+
+    """
+
+    @param dividend: the dividend
+
+    @param divisor: the divisor
+
+    @return: the result
+
+    """
+
+    def divide(self, dividend, divisor):
+
+        #判断答案符号
+
+        is_negative = False
+
+        if dividend > 0 and divisor < 0 or dividend < 0 and divisor > 0:
+
+            is_negative = True
+
+        if dividend < 0:
+
+            dividend = -dividend
+
+        if divisor < 0:
+
+            divisor = -divisor
+
+        ans = 0
+
+        while dividend >= divisor:
+
+            temp = divisor
+
+            cnt = 1
+
+            while dividend >= temp:
+
+                dividend -= temp
+
+                ans += cnt
+
+                cnt <<= 1
+
+                temp <<= 1
+
+        if is_negative:
+
+            ans = -ans
+
+        if ans >= 1 << 31:
+
+            ans = (1 << 31) - 1
+
+        return ans
